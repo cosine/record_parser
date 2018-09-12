@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "record_parser"
+
+RecordParser.run_cmdline(ARGV, out: $stdout, err: $stderr)

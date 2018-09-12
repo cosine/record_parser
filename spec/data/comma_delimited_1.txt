@@ -1,0 +1,3 @@
+Carlisle, Eva, female, white, 1995-06-12
+Venti, Harry, male, brown, 1994-12-03
+Davidson, Candice, female, yellow, 1997-09-10
