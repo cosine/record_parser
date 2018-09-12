@@ -6,8 +6,8 @@ describe RecordParser do
       argv = [
         "spec/data/pipe_delimited_2.txt",
         "spec/data/pipe_delimited_1.txt",
-        "spec/data/comma_delimited.txt",
-        "spec/data/space_delimited.txt",
+        "spec/data/comma_delimited_1.txt",
+        "spec/data/space_delimited_1.txt",
         "--sort", "option1",
         "--outform", "comma_delimited",
       ]
@@ -37,8 +37,8 @@ describe RecordParser do
       argv = [
         "spec/data/pipe_delimited_2.txt",
         "spec/data/pipe_delimited_1.txt",
-        "spec/data/comma_delimited.txt",
-        "spec/data/space_delimited.txt",
+        "spec/data/comma_delimited_1.txt",
+        "spec/data/space_delimited_1.txt",
         "--sort", "option2",
         "--outform", "space_delimited",
       ]
@@ -68,8 +68,8 @@ describe RecordParser do
       argv = [
         "spec/data/pipe_delimited_2.txt",
         "spec/data/pipe_delimited_1.txt",
-        "spec/data/comma_delimited.txt",
-        "spec/data/space_delimited.txt",
+        "spec/data/comma_delimited_1.txt",
+        "spec/data/space_delimited_1.txt",
         "--sort", "option3",
         "--outform", "pipe_delimited",
       ]
@@ -99,8 +99,8 @@ describe RecordParser do
       argv = [
         "spec/data/pipe_delimited_2.txt",
         "spec/data/pipe_delimited_1.txt",
-        "spec/data/comma_delimited.txt",
-        "spec/data/space_delimited.txt",
+        "spec/data/comma_delimited_1.txt",
+        "spec/data/space_delimited_1.txt",
         "spec/data/erroneous_data.txt",
         "--sort", "option1",
         "--outform", "comma_delimited",
@@ -111,7 +111,43 @@ describe RecordParser do
       RecordParser.run_cmdline(argv, out: out_buffer, err: err_buffer)
 
       expect(out_buffer.size).to be_zero
-      expect(err_buffer.size).not_to be_zero
+      expect(err_buffer.string).to match(/invalid input data/)
+    end
+
+    it "errors with an invalid sort option" do
+      argv = [
+        "spec/data/pipe_delimited_2.txt",
+        "spec/data/pipe_delimited_1.txt",
+        "spec/data/comma_delimited_1.txt",
+        "spec/data/space_delimited_1.txt",
+        "--sort", "invalid",
+        "--outform", "comma_delimited",
+      ]
+
+      out_buffer = StringIO.new
+      err_buffer = StringIO.new
+      RecordParser.run_cmdline(argv, out: out_buffer, err: err_buffer)
+
+      expect(out_buffer.size).to be_zero
+      expect(err_buffer.string).to match(/sort/)
+    end
+
+    it "errors with an invalid outform option" do
+      argv = [
+        "spec/data/pipe_delimited_2.txt",
+        "spec/data/pipe_delimited_1.txt",
+        "spec/data/comma_delimited_1.txt",
+        "spec/data/space_delimited_1.txt",
+        "--sort", "option1",
+        "--outform", "invalid_outform",
+      ]
+
+      out_buffer = StringIO.new
+      err_buffer = StringIO.new
+      RecordParser.run_cmdline(argv, out: out_buffer, err: err_buffer)
+
+      expect(out_buffer.size).to be_zero
+      expect(err_buffer.string).to match(/outform/)
     end
   end
 end

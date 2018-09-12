@@ -12,11 +12,11 @@ class RecordParser
 
     SORT_ORDERS = {
       # Sort option 1: gender (female then male), last name ascending
-      option1: ->(record) { [record.gender == :female ? 0 : record.gender == :male ? 1 : 2, record.last_name.downcase] },
+      "option1" => ->(record) { [record.gender == :female ? 0 : record.gender == :male ? 1 : 2, record.last_name.downcase] },
       # Sort option 2: birth date ascending
-      option2: ->(record) { record.birth_date },
+      "option2" => ->(record) { record.birth_date },
       # Sort option 3: last name descending
-      option3: ->(record) { record.last_name.downcase.each_char.map { |ch| -ch.ord } },
+      "option3" => ->(record) { record.last_name.downcase.each_char.map { |ch| -ch.ord } },
     }
 
     private
