@@ -10,7 +10,7 @@ class RecordParser
   class << self
     def create_formatter(formatter_name)
       separator_hash = {
-        "pime_delimited"  => " | ",
+        "pipe_delimited"  => " | ",
         "comma_delimited" => ", ",
         "space_delimited" => " ",
       }
