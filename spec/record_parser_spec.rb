@@ -111,7 +111,7 @@ describe RecordParser do
       RecordParser.run_cmdline(argv, out: out_buffer, err: err_buffer)
 
       expect(out_buffer.size).to be_zero
-      expect(err_buffer.string).to match(/invalid input data/)
+      expect(err_buffer.string).to match(%r"unable to parse record in spec/data/erroneous_data.txt line 1")
     end
 
     it "errors with an invalid sort option" do
@@ -129,7 +129,7 @@ describe RecordParser do
       RecordParser.run_cmdline(argv, out: out_buffer, err: err_buffer)
 
       expect(out_buffer.size).to be_zero
-      expect(err_buffer.string).to match(/sort/)
+      expect(err_buffer.string).to match(/invalid sort option/)
     end
 
     it "errors with an invalid outform option" do

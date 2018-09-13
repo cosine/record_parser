@@ -42,7 +42,13 @@ class RecordParser
         return 1
       end
 
-      records = RecordSet.new(sort_by: RecordSet::SORT_ORDERS[options[:sort]])
+      sort_proc = RecordSet::SORT_ORDERS[options[:sort]]
+      if sort_proc.nil?
+        err.puts("Error: invalid sort option given.")
+        return 1
+      end
+
+      records = RecordSet.new(sort_by: sort_proc)
 
       files.each do |filename|
         File.open(filename, "r") do |file_handle|
