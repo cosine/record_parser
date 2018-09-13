@@ -8,6 +8,22 @@ require "record_parser/parsers/try_multiple"
 
 class RecordParser
   class << self
+    def create_formatter(formatter_name)
+      separator_hash = {
+        "pime_delimited"  => " | ",
+        "comma_delimited" => ", ",
+        "space_delimited" => " ",
+      }
+
+      separator = separator_hash[formatter_name]
+
+      if separator
+        RecordParser::Formatter.new(separator)
+      else
+        nil
+      end
+    end
+
     def parser
       component_parsers = [
         RecordParser::Parsers::Delimited.new(/ *\| */),
@@ -20,6 +36,12 @@ class RecordParser
 
     def run_cmdline(argv, out:, err:)
       options, files = parse_options(argv)
+      formatter = create_formatter(options[:outform])
+      if formatter.nil?
+        err.puts("Error: invalid outform given.")
+        return 1
+      end
+
       records = RecordSet.new(sort_by: RecordSet::SORT_ORDERS[options[:sort]])
 
       files.each do |filename|
@@ -32,14 +54,14 @@ class RecordParser
               records.add_record(record)
             else
               err.puts("Error: unable to parse record in #{filename} line #{file_handle.lineno}.")
-              return 1
+              return 2
             end
           end
         end
       end
 
       records.list_records.each do |record|
-        out.puts record.inspect
+        out.puts formatter.format(record)
       end
     end
 
