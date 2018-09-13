@@ -1,18 +1,45 @@
 require "optparse"
 
+require "record_parser/record"
+require "record_parser/record_set"
+require "record_parser/formatter"
+require "record_parser/parsers/delimited"
+require "record_parser/parsers/try_multiple"
+
 class RecordParser
   class << self
+    def parser
+      component_parsers = [
+        RecordParser::Parsers::Delimited.new(/ *\| */),
+        RecordParser::Parsers::Delimited.new(/ *, */),
+        RecordParser::Parsers::Delimited.new(/ +/),
+      ]
+
+      RecordParser::Parsers::TryMultiple.new(*component_parsers)
+    end
+
     def run_cmdline(argv, out:, err:)
       options, files = parse_options(argv)
-      records = RecordSet.new(sort_by: Record::SORT_ORDERS[options[:sort]])
+      records = RecordSet.new(sort_by: RecordSet::SORT_ORDERS[options[:sort]])
 
       files.each do |filename|
         File.open(filename, "r") do |file_handle|
           while not file_handle.eof?
             record_text = file_handle.readline.chomp
-            # TODO: identify format and parse
+            record = parser.parse(record_text)
+
+            if record
+              records.add_record(record)
+            else
+              err.puts("Error: unable to parse record in #{filename} line #{file_handle.lineno}.")
+              return 1
+            end
           end
         end
+      end
+
+      records.list_records.each do |record|
+        out.puts record.inspect
       end
     end
 
@@ -40,9 +67,3 @@ class RecordParser
     end
   end
 end
-
-require "record_parser/record"
-require "record_parser/record_set"
-require "record_parser/parsers/pipe_delimited"
-require "record_parser/parsers/comma_delimited"
-require "record_parser/parsers/space_delimited"
