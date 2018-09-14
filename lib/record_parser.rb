@@ -25,13 +25,15 @@ class RecordParser
     end
 
     def parser
-      component_parsers = [
-        RecordParser::Parsers::Delimited.new(/ *\| */),
-        RecordParser::Parsers::Delimited.new(/ *, */),
-        RecordParser::Parsers::Delimited.new(/ +/),
-      ]
+      @parser ||= begin
+        component_parsers = [
+          RecordParser::Parsers::Delimited.new(/ *\| */),
+          RecordParser::Parsers::Delimited.new(/ *, */),
+          RecordParser::Parsers::Delimited.new(/ +/),
+        ]
 
-      RecordParser::Parsers::TryMultiple.new(*component_parsers)
+        RecordParser::Parsers::TryMultiple.new(*component_parsers)
+      end
     end
 
     def run_cmdline(argv, out:, err:)
