@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift(File.join(File.dirname(File.dirname(__FILE__)), "lib"))
+$LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
 require "record_parser"
 
 RecordParser.run_cmdline(ARGV, out: $stdout, err: $stderr)
