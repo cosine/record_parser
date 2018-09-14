@@ -1,4 +1,5 @@
 require "date"
+require "json"
 
 class RecordParser
   class Record
@@ -18,6 +19,12 @@ class RecordParser
       FIELDS.all? do |field_name|
         send(field_name) == other.send(field_name)
       end
+    end
+
+    def to_json
+      Hash[FIELDS.map do |field_name|
+        [field_name, send(field_name)]
+      end].to_json
     end
 
     private
