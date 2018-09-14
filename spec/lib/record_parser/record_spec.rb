@@ -37,11 +37,4 @@ describe RecordParser::Record do
     record = RecordParser::Record.new(["Last", "First", "unknown", "green", "3/5/1999"])
     expect(record.gender).to eq(:other)
   end
-
-  describe "#to_json" do
-    it "creates proper JSON" do
-      record = RecordParser::Record.new(["Last", "First", :male, "green", Date.new(1999, 11, 3)])
-      expect(record.to_json).to eq('{"last_name":"Last","first_name":"First","gender":"male","favorite_color":"green","birth_date":"1999-11-03"}')
-    end
-  end
 end

@@ -3,6 +3,7 @@ require "optparse"
 require "record_parser/record"
 require "record_parser/record_set"
 require "record_parser/formatter"
+require "record_parser/json_formatter"
 require "record_parser/parsers/delimited"
 require "record_parser/parsers/try_multiple"
 
