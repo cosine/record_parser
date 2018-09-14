@@ -14,6 +14,10 @@ class RecordParser
 
     reset_records!
 
+    def json_response(http_status, data_structure)
+      [http_status, {"Content-Type" => "application/json"}, RecordParser::JsonFormatter.jsonify(data_structure)]
+    end
+
     post "/records" do
       record = RecordParser.parser.parse(request.body.read)
 
@@ -21,19 +25,25 @@ class RecordParser
         self.class.records_option1.add_record(record)
         self.class.records_option2.add_record(record)
         self.class.records_option3.add_record(record)
-        [201, {"Content-Type" => "application/json"}, '{record:{}}']
+        json_response(201, record: record)
       else
-        [400, {"Content-Type" => "application/json"}, '{error:{"Error: unable to parse record."}}']
+        json_response(400, error: "Error: unable to parse record.")
       end
     end
 
     get "/records/gender" do
+      records = self.class.records_option1.list_records
+      json_response(200, records: records)
     end
 
     get "/records/birthdate" do
+      records = self.class.records_option2.list_records
+      json_response(200, records: records)
     end
 
     get "/records/name" do
+      records = self.class.records_option3.list_records
+      json_response(200, records: records)
     end
   end
 end
